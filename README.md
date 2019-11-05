@@ -8,4 +8,4 @@
 
 - The related backend is based on firebase : https://firebase.google.com/
 
-- For security reason, the environments repository is not pushed. You have to complete it with firebase config
+- For security reason, the environments folder is not pushed. You have to complete it with firebase config
