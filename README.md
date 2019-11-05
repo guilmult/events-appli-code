@@ -1,4 +1,4 @@
-# events-appli-code
+# Events in private rooms application
 
 - This repository contains the code related to the application : https://guilmult.github.io/events-appli
 
