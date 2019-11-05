@@ -1,0 +1,93 @@
+
+<div class="container">
+
+<mat-card>
+    <mat-card-content>
+        <section>
+                <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+
+                    <mat-checkbox class="checkbox-on-left" (change)="filterInscrit($event)">Uniquement les activités où je suis inscrit</mat-checkbox>
+                    
+                    <div style="float:right;">
+                    <button color="primary" mat-icon-button  matTooltip="Ajouter" (click)="openAddEventDialog()">
+                        <mat-icon>add_circle</mat-icon>
+                    </button>
+                   </div>
+        </section>
+    </mat-card-content>
+</mat-card>
+
+
+
+
+
+
+
+<div class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSource" matSort>
+
+    
+    <ng-container matColumnDef="date"> 
+      <th mat-header-cell *matHeaderCellDef  mat-sort-header> Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.date | date}} </td>
+    </ng-container>
+  
+    
+    <ng-container matColumnDef="titre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Titre </th>
+      <td mat-cell *matCellDef="let element"> {{element.titre}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="inscrits">
+        <th mat-header-cell *matHeaderCellDef> Inscrits </th>
+        <td mat-cell *matCellDef="let element"> 
+            
+            <ng-container *ngIf="element?.isInscrit; then inscritTemplate; else nonInscritTemplate">
+
+            </ng-container> {{element?.inscrits?.length}} 
+
+            <ng-template #inscritTemplate>
+                <mat-icon color="accent">person</mat-icon>
+            </ng-template>
+            <ng-template #nonInscritTemplate>
+                <mat-icon>person</mat-icon> 
+            </ng-template>
+        </td>
+    </ng-container>
+  
+  
+    <ng-container matColumnDef="actions">
+            
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element"> 
+        
+       
+            <ng-container *ngIf="element?.isInscrit; then desinscriptionTemplate; else inscriptionTemplate">
+            </ng-container>
+
+            <ng-template #inscriptionTemplate>
+                <button mat-icon-button  matTooltip="Inscription" (click)="inscription(element)">
+                  <mat-icon>person_add</mat-icon>
+                </button>
+            </ng-template>
+            <ng-template #desinscriptionTemplate>
+                <button mat-icon-button  matTooltip="Desinscription" (click)="desinscription(element)">
+                 <mat-icon>exit_to_app</mat-icon>
+                </button>
+            </ng-template>
+
+            <button mat-icon-button  matTooltip="Detail" (click)="openDetail(element)">
+                    <mat-icon>remove_red_eye</mat-icon>
+                   </button>
+        
+        </td>
+    </ng-container>    
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+</div>
+  

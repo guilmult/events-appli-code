@@ -1,0 +1,15 @@
+<div mat-dialog-title>Formulaire de connexion</div>
+<div mat-dialog-content>
+  <div class="connexion-form-container">
+    <mat-form-field>
+        <input matInput placeholder="Email" [(ngModel)]="email">
+    </mat-form-field>
+    <mat-form-field>
+        <input type="password" matInput placeholder="Mot de passe" [(ngModel)]="password">
+    </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="signIn()">Connexion</button>
+  <button mat-raised-button [mat-dialog-close]="true">Annuler</button>
+</div>

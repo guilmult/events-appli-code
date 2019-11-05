@@ -1,0 +1,22 @@
+<div mat-dialog-title>Ajouter une actvité</div>
+
+<div mat-dialog-content>
+    <div class="form-container">
+            <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="evenement.timestamp">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Titre" [(ngModel)]="evenement.titre">
+            </mat-form-field>
+            <mat-form-field>
+                <textarea matInput placeholder="Descriptif" [(ngModel)]="evenement.description"></textarea>
+            </mat-form-field>
+        
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="add()">Sauvegarder</button>
+    <button mat-raised-button [mat-dialog-close]="true">Annuler</button>
+</div>
