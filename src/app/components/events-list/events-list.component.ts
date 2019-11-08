@@ -19,7 +19,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   
 
   constructor(public dialog: MatDialog, private eventsService: EventsService, private authService: AuthenticationService) { }
-  displayedColumns: string[] = ['inscrits', 'date', 'titre', 'actions'];
+  displayedColumns: string[] = [ 'date', 'titre', 'actions'];
   dataSource: MatTableDataSource<Evenement> ;
   
   subscriptions: Subscription[] = [];
