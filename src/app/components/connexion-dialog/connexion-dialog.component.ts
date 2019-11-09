@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-connexion-dialog',
   templateUrl: './connexion-dialog.component.html',
-  styleUrls: ['./connexion-dialog.component.scss']
+  styles: ['.connexion-form-container {display: flex;flex-direction: column;}']
 })
 export class ConnexionDialogComponent {
 

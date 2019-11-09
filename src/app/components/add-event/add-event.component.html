@@ -1,0 +1,36 @@
+
+<mat-card>
+    <mat-card-title>Ajouter une activité</mat-card-title>
+    <mat-card-content>
+        <div class="form-container">
+                <mat-form-field>
+                    <input matInput [matDatepicker]="picker" placeholder="Choisir une date" [(ngModel)]="moment">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Titre" [(ngModel)]="evenement.titre">
+                </mat-form-field>
+                <mat-form-field>
+                    <textarea matInput placeholder="Descriptif" [(ngModel)]="evenement.description"
+                    matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10></textarea>
+                </mat-form-field>
+                <mat-form-field>
+                        <input matInput placeholder="Site web" [(ngModel)]="evenement.lienSiteWeb">
+                    </mat-form-field>
+                <div style="margin: auto;">
+                    
+                    <button mat-icon-button color="primary"  matTooltip="Sauvegarder" (click)="add()">
+                        <mat-icon>save</mat-icon>
+                    </button>
+
+                    <button mat-icon-button   matTooltip="Annuler" (click)="cancel()">
+                            <mat-icon>cancel</mat-icon>
+                    </button>
+                </div>
+            
+        </div>
+    </mat-card-content>
+</mat-card>
+    
+

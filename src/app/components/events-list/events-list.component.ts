@@ -3,22 +3,22 @@ import { Evenement } from '../../models/evenement';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
-import { AddEventDialogComponent } from '../add-event-dialog/add-event-dialog.component';
 import { EventsService } from '../../services/events.service';
 import { Subscription, combineLatest, fromEvent } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { DetailDialogComponent } from '../detail-dialog/detail-dialog.component';
+import { Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-events-list',
   templateUrl: './events-list.component.html',
-  styleUrls: ['./events-list.component.scss']
+  styles: ['table {width: 100%; margin: 5px;}',
+           '.inscrit-highlight {background-color: #ffd740}']
 })
 export class EventsListComponent implements OnInit, OnDestroy {
   
 
-  constructor(public dialog: MatDialog, private eventsService: EventsService, private authService: AuthenticationService) { }
+  constructor(public dialog: MatDialog, private eventsService: EventsService, private authService: AuthenticationService, private router:Router) { }
   displayedColumns: string[] = [ 'date', 'titre', 'actions'];
   dataSource: MatTableDataSource<Evenement> ;
   
@@ -30,7 +30,10 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+   
    this.populateDatatable(false);
+   this.sort.direction = 'asc';  
+   this.sort.active = 'date';
   }
 
   ngOnDestroy(): void {
@@ -63,8 +66,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
      this.populateDatatable(event.checked);
   }
 
-  openAddEventDialog() {
-    this.dialog.open(AddEventDialogComponent, {width: '50%' });
+  navigateAddEvent() {
+    this.router.navigate(['addEvent']);
   }
 
   inscription(evenement: Evenement) {
@@ -77,8 +80,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.eventsService.update(evenement);
   }
 
-  openDetail(evenement: Evenement) {
-    this.dialog.open(DetailDialogComponent,{width: '50%', data: {...evenement} } )
+  navigateDetail(evenement: Evenement) {
+    this.router.navigate(['events/', evenement.id]);
   }
 
 }

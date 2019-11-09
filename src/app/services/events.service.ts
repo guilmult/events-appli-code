@@ -1,11 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 
-import * as firebase from 'firebase';
+
 import { Evenement } from '../models/evenement';
-import { Observable, Subscription, concat } from 'rxjs';
-import { map, concatMap, concatAll, combineLatest } from 'rxjs/operators';
-import { AuthenticationService } from './authentication.service';
+import { Observable} from 'rxjs';
+import { map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +26,16 @@ export class EventsService {
       }))
     );
     
+  }
+
+  getEventById(id: string) : Observable<Evenement> {
+    return this.events.doc(id).get().pipe(
+        map(x => {
+          const data = x.data();
+          return {id, ...data} as Evenement;
+        })
+      )
+
   }
 
   addOne(evenement: Evenement) {

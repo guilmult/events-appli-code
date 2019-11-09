@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
@@ -22,7 +22,7 @@ import { NamefrommailPipe } from './pipes/namefrommail.pipe';
 import { ConnexionDialogComponent } from './components/connexion-dialog/connexion-dialog.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { AddEventDialogComponent } from './components/add-event-dialog/add-event-dialog.component';
+import { AddEventComponent } from './components/add-event/add-event.component';
 import { EventsService } from './services/events.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
@@ -31,8 +31,16 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { EventsListComponent } from './components/events-list/events-list.component';
-import { DetailDialogComponent } from './components/detail-dialog/detail-dialog.component';
+import { DetailEventComponent } from './components/detail-event/detail-event.component';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import localeFr from '@angular/common/locales/fr';
+
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeFr);
 
 @NgModule({
   declarations: [
@@ -41,7 +49,8 @@ import { DetailDialogComponent } from './components/detail-dialog/detail-dialog.
     ConnexionDialogComponent,
     WelcomeComponent,
     EventsListComponent, 
-    AddEventDialogComponent, DetailDialogComponent
+    AddEventComponent, 
+    DetailEventComponent
   ],
   imports: [
     BrowserModule,
@@ -67,12 +76,16 @@ import { DetailDialogComponent } from './components/detail-dialog/detail-dialog.
     MatNativeDateModule,
     MatTableModule,
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    MatMomentDateModule,
+    MatExpansionModule
   ],
   entryComponents: [
-    ConnexionDialogComponent, AddEventDialogComponent, DetailDialogComponent
+    ConnexionDialogComponent
   ],
-  providers: [AuthenticationService, EventsService, MatDatepickerModule, AngularFirestore],
+  providers: [AuthenticationService, EventsService, MatDatepickerModule, AngularFirestore,
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: LOCALE_ID, useValue: 'fr' }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
