@@ -2,21 +2,32 @@
 <mat-card>
     <mat-card-title>Ajouter une activité</mat-card-title>
     <mat-card-content>
-        <div class="form-container">
+        <form class="form-container">
                 <mat-form-field>
-                    <input matInput [matDatepicker]="picker" placeholder="Choisir une date" [(ngModel)]="moment">
+                    <input matInput [matDatepicker]="picker" placeholder="Choisir une date" 
+                    [(ngModel)]="moment" [formControl]="dateRequiredControl">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="dateRequiredControl.hasError('required')">
+                        La date est obligatoire
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Titre" [(ngModel)]="evenement.titre">
+                    <input matInput placeholder="Titre" [(ngModel)]="evenement.titre" [formControl]="titreRequiredControl">
+                    <mat-error *ngIf="titreRequiredControl.hasError('required')">
+                        Le titre est obligatoire
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field>
                     <textarea matInput placeholder="Descriptif" [(ngModel)]="evenement.description"
                     matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10></textarea>
                 </mat-form-field>
                 <mat-form-field>
-                        <input matInput placeholder="Site web" [(ngModel)]="evenement.lienSiteWeb">
+                        <input matInput placeholder="Site web" [(ngModel)]="evenement.lienSiteWeb"
+                        [formControl]="urlControl">
+                        <mat-error *ngIf="urlControl.hasError('pattern')">
+                            L'URL n'a pas le bon format
+                        </mat-error>
                     </mat-form-field>
                 <div style="margin: auto;">
                     
@@ -29,7 +40,7 @@
                     </button>
                 </div>
             
-        </div>
+            </form>
     </mat-card-content>
 </mat-card>
     

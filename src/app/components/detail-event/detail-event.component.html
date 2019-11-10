@@ -5,6 +5,14 @@
 <button *ngIf="event?.lienSiteWeb" mat-icon-button matTooltip="Lien" color="primary" (click)="goToSite()">
     <mat-icon>web</mat-icon> 
 </button>
+
+<button *ngIf="!event?.isInscrit" color="primary" mat-icon-button   matTooltip="Inscription" (click)="inscription()">
+    <mat-icon>person_add</mat-icon>
+  </button>
+
+<button *ngIf="event?.isInscrit" color="primary" mat-icon-button   matTooltip="Desinscription" (click)="desinscription()">
+   <mat-icon>logout</mat-icon>
+</button>
   
      <mat-accordion>
         
@@ -25,7 +33,7 @@
         <mat-expansion-panel >
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Liste des inscrits
+                    Liste des inscrits ({{event?.inscrits?.length}})
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <table>

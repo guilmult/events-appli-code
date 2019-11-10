@@ -3,7 +3,7 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,7 +27,7 @@ import { EventsService } from './services/events.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
 import { MatSortModule } from '@angular/material/sort';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
@@ -78,14 +78,17 @@ registerLocaleData(localeFr);
     MatListModule,
     MatDividerModule,
     MatMomentDateModule,
-    MatExpansionModule
+    MatExpansionModule,
+    ReactiveFormsModule
   ],
   entryComponents: [
     ConnexionDialogComponent
   ],
   providers: [AuthenticationService, EventsService, MatDatepickerModule, AngularFirestore,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
-    { provide: LOCALE_ID, useValue: 'fr' }],
+    { provide: LOCALE_ID, useValue: 'fr' },
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

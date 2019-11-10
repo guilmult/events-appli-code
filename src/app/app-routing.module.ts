@@ -4,22 +4,26 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { EventsListComponent } from './components/events-list/events-list.component';
 import { AddEventComponent } from './components/add-event/add-event.component';
 import { DetailEventComponent } from './components/detail-event/detail-event.component';
+import { AuthGuard } from './guards/auth.guard';
 
 
 const routes: Routes = [
   {
     path: 'events',
-    component : EventsListComponent
+    component : EventsListComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'events/:id',
-    component : DetailEventComponent
+    component : DetailEventComponent,
+    canActivate: [AuthGuard]
   },
   { path: 'welcome',
     component : WelcomeComponent
   },
   { path: 'addEvent',
-    component : AddEventComponent
+    component : AddEventComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',

@@ -49,6 +49,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
       combineLatest(this.eventsService.getAllEvenements(), this.authService.userData,
       (events, userData) => ({events, userData}))
       .subscribe(x => {
+        x.events = x.events.filter(x => x.timestamp.toDate().getTime() >= this.getTodayAtMidnight())
         x.events.forEach(y => {
           y.isInscrit = y.inscrits.lastIndexOf(x.userData.email) > -1; 
           y.date = y.timestamp.toDate();
@@ -60,9 +61,17 @@ export class EventsListComponent implements OnInit, OnDestroy {
     )
   }
 
+  getTodayAtMidnight() : number {
+    let date = new Date();
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date.getTime();
+  }
+
 
   filterInscrit(event: any) {
-     console.log(event) 
      this.populateDatatable(event.checked);
   }
 

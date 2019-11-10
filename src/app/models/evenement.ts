@@ -1,6 +1,6 @@
 export interface Evenement {
     id?: string;
-    titre: string;
+    titre?: string;
     description?: string;
     date?: Date;
     timestamp?: firebase.firestore.Timestamp
