@@ -1,0 +1,10 @@
+
+<div mat-dialog-title>Une erreur est survenue...</div>
+<div mat-dialog-content>
+  
+    <mat-icon>sentiment_very_dissatisfied</mat-icon>
+    <span style="margin: 5px; color:red">{{data.message}}</span>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="close()">Fermer</button>
+</div>

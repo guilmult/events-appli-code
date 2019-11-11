@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
 
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
@@ -39,6 +39,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import localeFr from '@angular/common/locales/fr';
 
 import { registerLocaleData } from '@angular/common';
+import { AppErrorHandler } from './errors/error-handler';
+import { ErrorDialogComponent } from './errors/error-dialog.component';
 
 registerLocaleData(localeFr);
 
@@ -50,7 +52,8 @@ registerLocaleData(localeFr);
     WelcomeComponent,
     EventsListComponent, 
     AddEventComponent, 
-    DetailEventComponent
+    DetailEventComponent,
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -82,12 +85,14 @@ registerLocaleData(localeFr);
     ReactiveFormsModule
   ],
   entryComponents: [
-    ConnexionDialogComponent
+    ConnexionDialogComponent,
+    ErrorDialogComponent
   ],
   providers: [AuthenticationService, EventsService, MatDatepickerModule, AngularFirestore,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr' },
-    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},
+    {provide: ErrorHandler, useClass: AppErrorHandler}
   ],
   bootstrap: [AppComponent]
 })

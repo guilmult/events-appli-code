@@ -3,8 +3,8 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 
 
 import { Evenement } from '../models/evenement';
-import { Observable} from 'rxjs';
-import { map} from 'rxjs/operators';
+import { Observable, throwError} from 'rxjs';
+import { map, catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,8 @@ export class EventsService {
         const data = a.payload.doc.data() as Evenement;
         const id = a.payload.doc.id;
         return { id, ...data };
-      }))
+      })
+      )
     );
     
   }
@@ -47,6 +48,4 @@ export class EventsService {
     .set(evenement, {})
   }
 
-  
-  
 }

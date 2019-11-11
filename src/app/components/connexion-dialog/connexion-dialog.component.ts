@@ -10,13 +10,19 @@ import { Router } from '@angular/router';
 })
 export class ConnexionDialogComponent {
 
-  constructor(public authenticationService: AuthenticationService, private router: Router) { }
+  constructor(public authenticationService: AuthenticationService, private router: Router,
+    public dialogRef: MatDialogRef<ConnexionDialogComponent>) { }
 
   email: string
   password: string
+  error: boolean = false;
 
   signIn() {
     this.authenticationService.SignIn(this.email, this.password)
-    .then(res => this.router.navigate(['/events']));
+    .then(res => {
+      this.router.navigate(['/events']);
+      this.dialogRef.close();
+    })
+    .catch(x=> this.error = true);
   }
 }
