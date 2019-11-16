@@ -1,0 +1,15 @@
+.comments-div {
+    display: flex; 
+    flex-direction: column;
+    overflow-y: scroll;
+    white-space: pre-line;
+    max-height: 350px;
+}
+
+@media (max-width: 640px) {
+    .comments-div {
+        max-height: 150px;
+    }
+}
+
+

@@ -41,6 +41,7 @@ import localeFr from '@angular/common/locales/fr';
 import { registerLocaleData } from '@angular/common';
 import { AppErrorHandler } from './errors/error-handler';
 import { ErrorDialogComponent } from './errors/error-dialog.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 registerLocaleData(localeFr);
 
@@ -82,7 +83,8 @@ registerLocaleData(localeFr);
     MatDividerModule,
     MatMomentDateModule,
     MatExpansionModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ScrollingModule
   ],
   entryComponents: [
     ConnexionDialogComponent,

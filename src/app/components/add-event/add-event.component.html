@@ -5,7 +5,7 @@
         <form class="form-container">
                 <mat-form-field>
                     <input matInput [matDatepicker]="picker" placeholder="Choisir une date" 
-                    [(ngModel)]="moment" [formControl]="dateRequiredControl">
+                    [(ngModel)]="moment" [formControl]="dateRequiredControl" name="date">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-error *ngIf="dateRequiredControl.hasError('required')">
@@ -13,18 +13,18 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Titre" [(ngModel)]="evenement.titre" [formControl]="titreRequiredControl">
+                    <input matInput placeholder="Titre" [(ngModel)]="evenement.titre" [formControl]="titreRequiredControl" name="titre">
                     <mat-error *ngIf="titreRequiredControl.hasError('required')">
                         Le titre est obligatoire
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
                     <textarea matInput placeholder="Descriptif" [(ngModel)]="evenement.description"
-                    matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10></textarea>
+                    matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10 name="description"></textarea>
                 </mat-form-field>
                 <mat-form-field>
                         <input matInput placeholder="Site web" [(ngModel)]="evenement.lienSiteWeb"
-                        [formControl]="urlControl">
+                        [formControl]="urlControl"  name="lienSiteWeb">
                         <mat-error *ngIf="urlControl.hasError('pattern')">
                             L'URL n'a pas le bon format
                         </mat-error>

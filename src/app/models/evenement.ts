@@ -7,4 +7,5 @@ export interface Evenement {
     inscrits?: string[];
     isInscrit?: boolean;
     lienSiteWeb?: string;
+    status?: string;
 }

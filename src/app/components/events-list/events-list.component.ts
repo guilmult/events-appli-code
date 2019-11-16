@@ -7,13 +7,24 @@ import { EventsService } from '../../services/events.service';
 import { Subscription, combineLatest, fromEvent } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Router } from '@angular/router';
+import { trigger, transition, style, animate, sequence, state } from '@angular/animations';
+import { map, debounceTime } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-events-list',
   templateUrl: './events-list.component.html',
   styles: ['table {width: 100%; margin: 5px;}',
-           '.inscrit-highlight {background-color: #ffd740}']
+           '.inscrit-highlight {background-color: #ffd740}'],
+  animations: [
+    trigger('newRow', [
+      state('newEvent', style({backgroundColor : 'green'})),
+      state('oldEvent', style({})),
+      transition('newEvent => oldEvent', [
+        animate('1s')
+      ])
+    ])
+  ] 
 })
 export class EventsListComponent implements OnInit, OnDestroy {
   
@@ -48,7 +59,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       combineLatest(this.eventsService.getAllEvenements(), this.authService.userData,
       (events, userData) => ({events, userData}))
-      .subscribe(x => {
+      .pipe(map(x => {
         x.events = x.events.filter(x => x.timestamp.toDate().getTime() >= this.getTodayAtMidnight())
         x.events.forEach(y => {
           y.isInscrit = y.inscrits.lastIndexOf(x.userData.email) > -1; 
@@ -57,8 +68,18 @@ export class EventsListComponent implements OnInit, OnDestroy {
         this.dataSource= new MatTableDataSource(filterInscrit ? x.events.filter(z => z.isInscrit) : x.events);
         this.dataSource.sort = this.sort;
         this.currentUserEmail = x.userData.email;
-      })
-    )
+      }),
+      debounceTime(100),
+      map(() => {
+        let newEvents = this.dataSource.data.filter(x => x.status === 'newEvent');
+        newEvents.forEach(x => {x.status = 'oldEvent'});
+        return newEvents;
+      }),
+      debounceTime(1000),
+      map(newEvents => newEvents.forEach(x => this.eventsService.update(x)))
+      ).subscribe()
+    )  
+
   }
 
   getTodayAtMidnight() : number {
@@ -92,5 +113,6 @@ export class EventsListComponent implements OnInit, OnDestroy {
   navigateDetail(evenement: Evenement) {
     this.router.navigate(['events/', evenement.id]);
   }
+
 
 }
