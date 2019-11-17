@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 
 import { Moment } from 'moment';
 import * as firebase from 'firebase/app';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-add-event',
@@ -19,46 +19,50 @@ export class AddEventComponent implements OnInit, OnDestroy {
   
 
   subscription: Subscription;
-  evenement: Evenement = {inscrits:[]};
-  moment: Moment;
   
-  constructor(private eventsService: EventsService, private authService: AuthenticationService, private router: Router) { }
+  checkoutForm: FormGroup;
 
-  dateRequiredControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  titreRequiredControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  urlControl = new FormControl('', [
-   Validators.pattern('(https?://){1}([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')
-  ]);
-
+  currentUserEmail: string;
+  
+  constructor(private eventsService: EventsService, private authService: AuthenticationService, 
+    private router: Router, private formBuilder: FormBuilder) {
+      this.checkoutForm = this.formBuilder
+      .group({
+        titre:[null, Validators.required], 
+        description:'', 
+        date:['', Validators.required], 
+        lienSiteWeb:['', Validators.pattern('(https?://){1}([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]
+     })
+    }
+  
+    
+    get f() { return this.checkoutForm.controls; }
+ 
   ngOnInit() {
-    this.subscription = this.authService.userData.subscribe(x => this.evenement.inscrits.push(x.email));
+    this.subscription = this.authService.userData.subscribe(x => this.currentUserEmail = x.email);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  isFormValid() {
-    this.titreRequiredControl.markAsTouched();
-    this.dateRequiredControl.markAsTouched();
+  
+  add(formValue) {
     
-    const valid = !this.titreRequiredControl.invalid && !this.dateRequiredControl.invalid 
-    && !this.urlControl.invalid;
-    return valid;
-  }
-
-  add() {
-    if (this.isFormValid()) {
-      this.evenement.timestamp = firebase.firestore.Timestamp.fromDate(this.moment.toDate());
-      this.eventsService.addOne(this.evenement);
-      this.router.navigate(['events']);
+    if (this.checkoutForm.invalid) {
+      return;
     }
+
+    formValue.date = formValue.date.toDate();
+
+    let event: Evenement = {
+      creator: this.currentUserEmail,
+      creationDate: new Date(),
+      inscrits:[this.currentUserEmail],
+      ...formValue
+    }
+    this.eventsService.addOne(event);
+    this.router.navigate(['events']);
    
   }
 

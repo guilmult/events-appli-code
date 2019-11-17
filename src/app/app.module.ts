@@ -42,6 +42,7 @@ import { registerLocaleData } from '@angular/common';
 import { AppErrorHandler } from './errors/error-handler';
 import { ErrorDialogComponent } from './errors/error-dialog.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { DeconnexionDialogComponent } from './components/deconnexion-dialog/deconnexion-dialog.component';
 
 registerLocaleData(localeFr);
 
@@ -54,7 +55,8 @@ registerLocaleData(localeFr);
     EventsListComponent, 
     AddEventComponent, 
     DetailEventComponent,
-    ErrorDialogComponent
+    ErrorDialogComponent,
+    DeconnexionDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -88,7 +90,8 @@ registerLocaleData(localeFr);
   ],
   entryComponents: [
     ConnexionDialogComponent,
-    ErrorDialogComponent
+    ErrorDialogComponent,
+    DeconnexionDialogComponent
   ],
   providers: [AuthenticationService, EventsService, MatDatepickerModule, AngularFirestore,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },

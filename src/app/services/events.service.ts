@@ -66,7 +66,7 @@ export class EventsService {
 
   addComment(comment:string, author: string, evenementId: string) {
     this.angularFireStore.collection('events/'+ evenementId +'/comments')
-    .add({comment, author, timestamp:firebase.firestore.Timestamp.fromDate(new Date())});
+    .add({comment, author, date:new Date()});
   }
 
 }

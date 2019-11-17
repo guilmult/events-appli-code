@@ -14,9 +14,9 @@
       </ng-container>
 
       <ng-template #connectedTemplate>
-         
-          <mat-icon matTooltip="{{ (authenticationService.userData | async)?.email | namefrommail }}">account_circle</mat-icon>
-
+        <button mat-icon-button  matTooltip="{{ (authenticationService.userData | async)?.email | namefrommail }}" (click)="openDeconnexionDialog()">
+          <mat-icon>account_circle</mat-icon>
+        </button>
       </ng-template>
       <ng-template #notConnectedTemplate>
         <button mat-icon-button  matTooltip="Connexion" (click)="openConnexionDialog()">

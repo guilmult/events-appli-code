@@ -1,0 +1,10 @@
+<div mat-dialog-title>Deconnexion</div>
+<div mat-dialog-content>
+  <div class="connexion-form-container">
+    <p>Voulez vous vous deconnecter de l'application ?</p>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="signOut()" [mat-dialog-close]="true">Oui</button>
+  <button mat-raised-button [mat-dialog-close]="true">Non</button>
+</div>

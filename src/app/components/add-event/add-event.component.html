@@ -2,36 +2,36 @@
 <mat-card>
     <mat-card-title>Ajouter une activité</mat-card-title>
     <mat-card-content>
-        <form class="form-container">
+        <form [formGroup]="checkoutForm" (ngSubmit)="add(checkoutForm.value)" class="form-container">
                 <mat-form-field>
                     <input matInput [matDatepicker]="picker" placeholder="Choisir une date" 
-                    [(ngModel)]="moment" [formControl]="dateRequiredControl" name="date">
+                      formControlName="date">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
-                    <mat-error *ngIf="dateRequiredControl.hasError('required')">
+                    <mat-error *ngIf="f.date.errors">
                         La date est obligatoire
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Titre" [(ngModel)]="evenement.titre" [formControl]="titreRequiredControl" name="titre">
-                    <mat-error *ngIf="titreRequiredControl.hasError('required')">
+                    <input matInput placeholder="Titre" formControlName="titre">
+                    <mat-error *ngIf="f.titre.errors">
                         Le titre est obligatoire
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <textarea matInput placeholder="Descriptif" [(ngModel)]="evenement.description"
-                    matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10 name="description"></textarea>
+                    <textarea matInput placeholder="Descriptif"
+                    matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10 formControlName="description"></textarea>
                 </mat-form-field>
                 <mat-form-field>
-                        <input matInput placeholder="Site web" [(ngModel)]="evenement.lienSiteWeb"
-                        [formControl]="urlControl"  name="lienSiteWeb">
-                        <mat-error *ngIf="urlControl.hasError('pattern')">
+                        <input matInput placeholder="Site web" 
+                         formControlName="lienSiteWeb">
+                        <mat-error *ngIf="f.lienSiteWeb.errors">
                             L'URL n'a pas le bon format
                         </mat-error>
                     </mat-form-field>
                 <div style="margin: auto;">
                     
-                    <button mat-icon-button color="primary"  matTooltip="Sauvegarder" (click)="add()">
+                    <button mat-icon-button color="primary" type="submit"  matTooltip="Sauvegarder">
                         <mat-icon>save</mat-icon>
                     </button>
 

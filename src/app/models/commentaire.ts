@@ -1,7 +1,6 @@
 export interface Commentaire {
     id?: string
     author: string;
-    date?: Date;
+    date?: any;
     comment: string;
-    timestamp?: firebase.firestore.Timestamp;
 }

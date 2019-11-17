@@ -44,7 +44,7 @@ export class DetailEventComponent implements OnInit, OnDestroy {
     this.comments$ = this.activatedRoute.paramMap.pipe(
       switchMap(param => this.eventService.getCommentsByEventId(param.get('id'))),
       map(x => {
-        x.forEach(y=> y.date = y.timestamp.toDate());
+        x.forEach(y=> y.date = (y.date as firebase.firestore.Timestamp).toDate());
         return x;
       }),
       map(x => x.sort((a, b) => a.date.getTime() - b.date.getTime()))

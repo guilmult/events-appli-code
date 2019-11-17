@@ -13,7 +13,7 @@
 <button *ngIf="event?.isInscrit" color="primary" mat-icon-button   matTooltip="Desinscription" (click)="desinscription()">
    <mat-icon>logout</mat-icon>
 </button>
-  
+
      <mat-accordion>
         
         <mat-expansion-panel [expanded]="true">
@@ -22,7 +22,8 @@
                   <b>{{event?.titre}}</b>
                 </mat-panel-title>
                 <mat-panel-description>
-                    Le {{event?.timestamp.toDate() | date}}
+                    Le {{event?.date.toDate() | date}} <br/>
+                    Par {{event?.creator | namefrommail}}
                 </mat-panel-description>
             </mat-expansion-panel-header>
            
