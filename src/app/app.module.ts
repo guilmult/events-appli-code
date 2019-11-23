@@ -30,6 +30,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatNativeDateModule, ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { EventsListComponent } from './components/events-list/events-list.component';
@@ -43,6 +45,9 @@ import { AppErrorHandler } from './errors/error-handler';
 import { ErrorDialogComponent } from './errors/error-dialog.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DeconnexionDialogComponent } from './components/deconnexion-dialog/deconnexion-dialog.component';
+import { AddGroupComponent } from './components/add-group/add-group.component';
+import { UsersService } from './services/users.service';
+import { GroupsService } from './services/groups.service';
 
 registerLocaleData(localeFr);
 
@@ -56,7 +61,8 @@ registerLocaleData(localeFr);
     AddEventComponent, 
     DetailEventComponent,
     ErrorDialogComponent,
-    DeconnexionDialogComponent
+    DeconnexionDialogComponent,
+    AddGroupComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +92,9 @@ registerLocaleData(localeFr);
     MatMomentDateModule,
     MatExpansionModule,
     ReactiveFormsModule,
-    ScrollingModule
+    ScrollingModule,
+    MatMenuModule,
+    MatStepperModule
   ],
   entryComponents: [
     ConnexionDialogComponent,
@@ -94,6 +102,7 @@ registerLocaleData(localeFr);
     DeconnexionDialogComponent
   ],
   providers: [AuthenticationService, EventsService, MatDatepickerModule, AngularFirestore,
+    GroupsService, UsersService,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr' },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},

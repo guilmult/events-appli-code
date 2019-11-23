@@ -6,6 +6,12 @@
             <mat-icon>home</mat-icon>
         </button>
         <button *ngIf="(authenticationService.userData | async)?.email" mat-button routerLink="/events" routerLinkActive="active">Activités</button>
+        
+        <button *ngIf="(authenticationService.userData | async)?.email" mat-button [matMenuTriggerFor]="menu">Groupes</button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="/addGroup">Créer un groupe</button>
+        </mat-menu>
+
       </nav>
       <span class="toolbar-spacer"></span>
 
