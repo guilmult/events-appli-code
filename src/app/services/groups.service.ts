@@ -3,7 +3,8 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { Groupe } from '../models/groupe';
 import { User } from '../models/user';
 import { UsersService } from './users.service';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 
@@ -25,15 +26,16 @@ export class GroupsService {
     return this.groups.add(group);
   }
 
-  applyGroupToUser(groupId: string, users: string[]) {
-    console.log('applyGroupToUser');
-    users.forEach(x => {
-      this.userService.addUserGroup(x, groupId);
-    })
-    
+  getGroup(groupId: string) : Observable<Groupe> {
+    return this.groups.doc(groupId).get().pipe(
+      map(x => {
+        const data = x.data();
+        return {id:groupId, ...data} as Groupe;
+      })
+    )
   }
 
- 
+  
 
   
 

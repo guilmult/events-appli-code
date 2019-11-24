@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { User } from '../models/user';
 import { switchMap, map } from 'rxjs/operators';
+import { Groupe } from '../models/groupe';
 
 
 
@@ -30,15 +31,19 @@ export class UsersService {
     )
   }
 
-  addUserGroup(email: string, groupId: string ) {
+  addUserGroup(email: string, group: Groupe ) {
     return this.users.doc(email).get().pipe(
       switchMap(x => {
         const user = x.data();
-        user.groups.push(groupId);
+        user.groups.push(group);
         return this.users.doc(email).set(user,{});
       })
     );
     
+  }
+
+  getUser(email: string) {
+    return this.users.doc(email).get();
   }
  
 

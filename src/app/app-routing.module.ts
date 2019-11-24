@@ -6,6 +6,7 @@ import { AddEventComponent } from './components/add-event/add-event.component';
 import { DetailEventComponent } from './components/detail-event/detail-event.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AddGroupComponent } from './components/add-group/add-group.component';
+import { ListGroupComponent } from './components/list-group/list-group.component';
 
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
   },
   { path: 'addGroup',
     component : AddGroupComponent,
+    canActivate: [AuthGuard]
+  },
+  { path: 'groups',
+    component : ListGroupComponent,
     canActivate: [AuthGuard]
   },
   {

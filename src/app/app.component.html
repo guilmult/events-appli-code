@@ -5,13 +5,15 @@
         <button mat-icon-button routerLink="/welcome" routerLinkActive="active">
             <mat-icon>home</mat-icon>
         </button>
-        <button *ngIf="(authenticationService.userData | async)?.email" mat-button routerLink="/events" routerLinkActive="active">Activités</button>
-        
-        <button *ngIf="(authenticationService.userData | async)?.email" mat-button [matMenuTriggerFor]="menu">Groupes</button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item routerLink="/addGroup">Créer un groupe</button>
+        <button *ngIf="(authenticationService.userData | async)?.email" mat-button [matMenuTriggerFor]="menuEvent">Activités</button>
+        <mat-menu #menuEvent="matMenu">
+          <button mat-menu-item routerLink="/events">Publiques</button>
+          <button *ngFor="let groupe of (userGroups$ | async)" mat-menu-item routerLink="/groups/{{groupe.id}}/events">{{groupe.name}}</button>
         </mat-menu>
 
+
+        <button *ngIf="(authenticationService.userData | async)?.email" mat-button  routerLink="/groups" routerLinkActive="active">Mes groupes</button>
+ 
       </nav>
       <span class="toolbar-spacer"></span>
 

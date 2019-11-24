@@ -67,6 +67,7 @@ export class AddGroupComponent implements OnInit, OnDestroy {
   addGroup() {
     this.subscriptions.push(this.authService.userData.pipe(
       switchMap(x => {
+        this.emails.push(x.email);
         const group : Groupe = {
           creationDate: new Date(),
           creator: x.email,
@@ -77,7 +78,7 @@ export class AddGroupComponent implements OnInit, OnDestroy {
       }),
       map(x => {
         this.emails.forEach(y => {
-          this.subscriptions.push(this.userService.addUserGroup(y, x.id).subscribe());
+          this.subscriptions.push(this.userService.addUserGroup(y, {id: x.id, name:this.nameFormGroup.value.nameCtrl}).subscribe());
         })
          
       }),

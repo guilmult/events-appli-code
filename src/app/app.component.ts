@@ -2,8 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from './services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConnexionDialogComponent } from './components/connexion-dialog/connexion-dialog.component';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DeconnexionDialogComponent } from './components/deconnexion-dialog/deconnexion-dialog.component';
+import { UsersService } from './services/users.service';
+import { Groupe } from './models/groupe';
+import { User } from './models/user';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +16,8 @@ import { DeconnexionDialogComponent } from './components/deconnexion-dialog/deco
 export class AppComponent {
   title = 'trappiste';
   
-  constructor(public dialog: MatDialog, public authenticationService: AuthenticationService) {}
+  constructor(public dialog: MatDialog, public authenticationService: AuthenticationService,
+    public userService: UsersService) {}
 
   openConnexionDialog() {
     this.dialog.open(ConnexionDialogComponent);
@@ -22,5 +26,13 @@ export class AppComponent {
   openDeconnexionDialog() {
     this.dialog.open(DeconnexionDialogComponent);
   }
+
+  userGroups$ = this.authenticationService.userData.pipe(
+    switchMap(userData => this.userService.getUser(userData.email)),
+    map(x => {
+      const data = x.data();
+      return data.groups;
+    })
+  )
   
 }

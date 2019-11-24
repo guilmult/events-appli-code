@@ -48,6 +48,7 @@ import { DeconnexionDialogComponent } from './components/deconnexion-dialog/deco
 import { AddGroupComponent } from './components/add-group/add-group.component';
 import { UsersService } from './services/users.service';
 import { GroupsService } from './services/groups.service';
+import { ListGroupComponent } from './components/list-group/list-group.component';
 
 registerLocaleData(localeFr);
 
@@ -62,7 +63,8 @@ registerLocaleData(localeFr);
     DetailEventComponent,
     ErrorDialogComponent,
     DeconnexionDialogComponent,
-    AddGroupComponent
+    AddGroupComponent,
+    ListGroupComponent
   ],
   imports: [
     BrowserModule,
