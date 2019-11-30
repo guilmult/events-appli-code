@@ -16,7 +16,7 @@ import { User } from 'src/app/models/user';
 export class ListGroupComponent implements OnDestroy {
  
 
-  constructor(private authenticationService: AuthenticationService,
+  constructor(public authenticationService: AuthenticationService,
     private userService: UsersService,
     private groupService: GroupsService) { }
 
