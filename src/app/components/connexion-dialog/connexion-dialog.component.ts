@@ -20,7 +20,7 @@ export class ConnexionDialogComponent {
   signIn() {
     this.authenticationService.SignIn(this.email, this.password)
     .then(res => {
-      this.router.navigate(['/events']);
+      this.router.navigate(['/app/events']);
       this.dialogRef.close();
     })
     .catch(x=> this.error = true);

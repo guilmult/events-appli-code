@@ -11,31 +11,11 @@
         </form>
     </mat-step>
     <mat-step>
-        <form [formGroup]="emailFormGroup">
-            <ng-template matStepLabel>Ajouter des membres</ng-template>
-            <div>
-                <button mat-button color="primary" matStepperNext>Suivant</button>
-            </div>
-            <mat-form-field>
-              <input matInput placeholder="Email à ajouter" formControlName="emailCtrl">
-            </mat-form-field>
-            <button mat-icon-button color="primary"  matTooltip="Ajouter" [disabled]="f.emailCtrl.errors" (click)="addMember()">
-                <mat-icon>add</mat-icon>
-            </button>
-            <mat-error *ngIf="nonExistingUser">
-                    Ce mail n'existe pas dans l'application
-                </mat-error>
-          </form>
-          <table>
-            <tr *ngFor="let item of emails">
-                <td>{{item}}</td>
-                <td> 
-                    <button mat-icon-button color="primary"  matTooltip="Ajouter" [disabled]="f.emailCtrl.errors" (click)="removeMember(item)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-               </td>
-            </tr>
-        </table>
+        <ng-template matStepLabel>Ajouter des membres</ng-template>
+        <div>
+            <button mat-button color="primary" matStepperNext>Suivant</button>
+        </div>
+        <app-manage-group-members [editable]="true" (addMember)="onAddMember($event)" (removeMember)="onRemoveMember($event)"></app-manage-group-members>
     </mat-step>
     <mat-step>
         <ng-template matStepLabel>Sauvegarder</ng-template>

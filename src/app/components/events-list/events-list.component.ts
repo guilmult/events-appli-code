@@ -6,9 +6,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { EventsService } from '../../services/events.service';
 import { Subscription, combineLatest, fromEvent } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate, sequence, state } from '@angular/animations';
-import { map, debounceTime } from 'rxjs/operators';
+import { map, debounceTime, switchMap, filter, tap } from 'rxjs/operators';
+import { GroupsService } from 'src/app/services/groups.service';
 
 
 @Component({
@@ -29,7 +30,13 @@ import { map, debounceTime } from 'rxjs/operators';
 export class EventsListComponent implements OnInit, OnDestroy {
   
 
-  constructor(public dialog: MatDialog, private eventsService: EventsService, private authService: AuthenticationService, private router:Router) { }
+  constructor(public dialog: MatDialog, 
+    private eventsService: EventsService, 
+    private authService: AuthenticationService, 
+    private router:Router,
+    private activatedRoute: ActivatedRoute,
+    private groupService: GroupsService) { }
+  
   displayedColumns: string[] = [ 'date', 'titre', 'actions'];
   dataSource: MatTableDataSource<Evenement> ;
   
@@ -37,14 +44,29 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   currentUserEmail: string;
 
+  groupId: string;
+  groupName: string = "";
+
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
   ngOnInit() {
-   
+   this.subscriptions.push(
+    this.activatedRoute.paramMap.pipe(
+     map(param => param.get('groupId')),
+     filter(x => x !== null),
+     switchMap(x => this.groupService.getGroup(x)),
+     map(x => {
+       this.groupId = x.id;
+       this.groupName = x.name;
+     })
+    ).subscribe()
+   );
+
    this.populateDatatable(false);
    this.sort.direction = 'asc';  
    this.sort.active = 'date';
+   
   }
 
   ngOnDestroy(): void {
@@ -57,8 +79,11 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   populateDatatable(filterInscrit: boolean) {
     this.subscriptions.push(
-      combineLatest(this.eventsService.getAllEvenements(), this.authService.userData,
-      (events, userData) => ({events, userData}))
+      combineLatest(
+        this.activatedRoute.paramMap.pipe(switchMap(param => this.eventsService.getAllEvenements(param.get('groupId')))),
+        this.authService.userData,
+        (events, userData) => ({events, userData})
+       )
       .pipe(map(x => {
         x.events = x.events.filter(x => (x.date as firebase.firestore.Timestamp).toDate().getTime() >= this.getTodayAtMidnight())
         x.events.forEach(y => {
@@ -76,8 +101,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
         return newEvents;
       }),
       debounceTime(1000),
-      map(newEvents => newEvents.forEach(x => this.eventsService.update(x)))
-      ).subscribe()
+      map(newEvents => newEvents.forEach(x => this.eventsService.update(x, this.groupId)))
+      )
+      .subscribe()
     )  
 
   }
@@ -97,21 +123,33 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   navigateAddEvent() {
-    this.router.navigate(['addEvent']);
+    if (this.groupId) {
+      this.router.navigate(['/app/groups/'+this.groupId+'/addEvent']);
+    } else {
+      this.router.navigate(['/app/addEvent']);
+    }
+    
+    
   }
 
   inscription(evenement: Evenement) {
     evenement.inscrits.push(this.currentUserEmail);
-    this.eventsService.update(evenement);
+    this.eventsService.update(evenement, this.groupId);
   }
 
   desinscription(evenement: Evenement) {
     evenement.inscrits = evenement.inscrits.filter(x => x !== this.currentUserEmail);
-    this.eventsService.update(evenement);
+    this.eventsService.update(evenement, this.groupId);
   }
 
   navigateDetail(evenement: Evenement) {
-    this.router.navigate(['events/', evenement.id]);
+    if (this.groupId) {
+      this.router.navigate(['/app/groups/'+this.groupId+'/events/', evenement.id]);
+    } else {
+      this.router.navigate(['/app/events/', evenement.id]);
+    }
+    
+    
   }
 
 

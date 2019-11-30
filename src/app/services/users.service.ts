@@ -46,7 +46,10 @@ export class UsersService {
     return this.users.doc(email).get();
   }
  
-
+  update(user: User) {
+    this.users.doc(user.email)
+    .set(user, {})
+  }
   
 
 }

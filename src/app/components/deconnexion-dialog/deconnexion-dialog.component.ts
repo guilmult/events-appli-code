@@ -17,6 +17,6 @@ export class DeconnexionDialogComponent implements OnInit {
   }
 
   signOut() {
-    this.authenticationService.SignOut().then(() => this.router.navigate(['/welcome']));
+    this.authenticationService.SignOut().then(() => this.router.navigate(['/app/welcome']));
   }
 }

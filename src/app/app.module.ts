@@ -49,6 +49,8 @@ import { AddGroupComponent } from './components/add-group/add-group.component';
 import { UsersService } from './services/users.service';
 import { GroupsService } from './services/groups.service';
 import { ListGroupComponent } from './components/list-group/list-group.component';
+import { ManageGroupMembersComponent } from './components/manage-group-members/manage-group-members.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 registerLocaleData(localeFr);
 
@@ -64,7 +66,9 @@ registerLocaleData(localeFr);
     ErrorDialogComponent,
     DeconnexionDialogComponent,
     AddGroupComponent,
-    ListGroupComponent
+    ListGroupComponent,
+    ManageGroupMembersComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,

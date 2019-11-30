@@ -1,13 +1,27 @@
 <div style="display: flex; margin: 5px;">        
     <div style="margin-left: auto; margin-bottom: auto; margin-top: auto;" >    
-        <button  color="primary" mat-raised-button routerLink="/addGroup">
+        <button  color="primary" mat-raised-button routerLink="/app/addGroup">
             Ajouter
         </button>
     </div>
 </div>
-   
-{{groups$ | async | json}}
 
-
-<!--mat-accordion>
-</mat-accordion-->
+<mat-accordion *ngIf="groups$ | async">
+    <mat-expansion-panel *ngFor="let group of groups$ | async">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <b>{{group?.name}}</b>
+            </mat-panel-title>
+            <mat-panel-description>
+                Par {{group?.creator | namefrommail}}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-manage-group-members 
+            [emails]="group?.members" 
+            [groupId]="group?.id" 
+            [editable]="(authenticationService.userData | async)?.email === group?.creator" 
+            (addMember)="onAddMember($event)" 
+            (removeMember)="onRemoveMember($event)">
+        </app-manage-group-members>
+    </mat-expansion-panel>
+</mat-accordion>

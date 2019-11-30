@@ -4,7 +4,7 @@ import { EventsService } from '../../services/events.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Moment } from 'moment';
 import * as firebase from 'firebase/app';
@@ -18,14 +18,19 @@ import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms'
 export class AddEventComponent implements OnInit, OnDestroy {
   
 
-  subscription: Subscription;
+  subscriptions: Subscription[] = [];
   
   checkoutForm: FormGroup;
 
   currentUserEmail: string;
+
+  groupId: string;
   
-  constructor(private eventsService: EventsService, private authService: AuthenticationService, 
-    private router: Router, private formBuilder: FormBuilder) {
+  constructor(private eventsService: EventsService, 
+    private authService: AuthenticationService, 
+    private router: Router, 
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute) {
       this.checkoutForm = this.formBuilder
       .group({
         titre:[null, Validators.required], 
@@ -39,11 +44,16 @@ export class AddEventComponent implements OnInit, OnDestroy {
     get f() { return this.checkoutForm.controls; }
  
   ngOnInit() {
-    this.subscription = this.authService.userData.subscribe(x => this.currentUserEmail = x.email);
+    this.subscriptions.push(this.authService.userData.subscribe(x => this.currentUserEmail = x.email));
+    this.subscriptions.push(
+      this.activatedRoute.paramMap.pipe(
+        map(param => param.get('groupId')))
+        .subscribe(x => this.groupId = x)
+      );
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.forEach(x => x.unsubscribe());
   }
 
   
@@ -61,12 +71,20 @@ export class AddEventComponent implements OnInit, OnDestroy {
       inscrits:[this.currentUserEmail],
       ...formValue
     }
-    this.eventsService.addOne(event);
-    this.router.navigate(['events']);
+    this.eventsService.addOne(event, this.groupId);
+    this.navigateToListEvents();
    
   }
 
   cancel() {
-      this.router.navigate(['events']);
+    this.navigateToListEvents();
+  }
+
+  navigateToListEvents() {
+    if(this.groupId) {
+      this.router.navigate(['/app/groups/' + this.groupId + '/events']);
+    } else {
+      this.router.navigate(['/app/events']);
+    }
   }
 }

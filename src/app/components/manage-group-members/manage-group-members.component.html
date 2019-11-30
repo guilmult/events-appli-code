@@ -1,0 +1,22 @@
+<form *ngIf="editable" [formGroup]="emailFormGroup">
+    <mat-form-field>
+        <input matInput placeholder="Email à ajouter" formControlName="emailCtrl">
+    </mat-form-field>
+    <button mat-icon-button color="primary"  matTooltip="Ajouter" [disabled]="f.emailCtrl.errors" (click)="addMemberToTable()">
+        <mat-icon>add</mat-icon>
+    </button>
+    <mat-error *ngIf="nonExistingUser">
+            Ce mail n'existe pas dans l'application
+        </mat-error>
+</form>
+<table>
+    <tr *ngFor="let item of emails">
+        <td><mat-icon>person</mat-icon></td>
+        <td>{{item |  namefrommail}}</td>
+        <td> 
+            <button *ngIf="editable" mat-icon-button color="primary"  matTooltip="Ajouter" [disabled]="f.emailCtrl.errors" (click)="removeMemberFromTable(item)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+    </tr>
+</table>

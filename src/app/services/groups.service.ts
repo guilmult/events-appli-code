@@ -35,6 +35,10 @@ export class GroupsService {
     )
   }
 
+  update(group: Groupe) {
+    this.groups.doc(group.id)
+    .set(group, {})
+  }
   
 
   

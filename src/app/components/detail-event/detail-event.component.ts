@@ -34,15 +34,21 @@ export class DetailEventComponent implements OnInit, OnDestroy {
 
   comments$: Observable<Commentaire[]>;
 
+  groupId: string;
+
   @ViewChildren(CdkScrollable) cdkScrollable;
 
   ngOnInit() {
+    
+    this.subscription.push(this.activatedRoute.paramMap.subscribe(param => this.groupId = param.get('groupId')));
+    
+    
     this.data$ = this.activatedRoute.paramMap.pipe(
-      switchMap(param => this.eventService.getEventById(param.get('id')))
+      switchMap(param => this.eventService.getEventById(param.get('id'), param.get('groupId')))
     )
 
     this.comments$ = this.activatedRoute.paramMap.pipe(
-      switchMap(param => this.eventService.getCommentsByEventId(param.get('id'))),
+      switchMap(param => this.eventService.getCommentsByEventId(param.get('id'), param.get('groupId'))),
       map(x => {
         x.forEach(y=> y.date = (y.date as firebase.firestore.Timestamp).toDate());
         return x;
@@ -66,7 +72,12 @@ export class DetailEventComponent implements OnInit, OnDestroy {
   }
 
   back() {
-    this.router.navigate(['/events']);
+    if (this.groupId) {
+      this.router.navigate(['/app/groups/' + this.groupId + '/events' ]);
+    } else {
+      this.router.navigate(['/app/events']);
+    }
+    
   }
 
   goToSite() {
@@ -77,18 +88,18 @@ export class DetailEventComponent implements OnInit, OnDestroy {
 
   inscription() {
     this.event.inscrits.push(this.currentUserEmail);
-    this.eventService.update(this.event);
+    this.eventService.update(this.event, this.groupId);
     this.event.isInscrit = true;
   }
 
   desinscription() {
     this.event.inscrits = this.event.inscrits.filter(x => x !== this.currentUserEmail);
-    this.eventService.update(this.event);
+    this.eventService.update(this.event, this.groupId);
     this.event.isInscrit = false;
   }
 
   addComment() {
-    this.eventService.addComment(this.commentaire, this.currentUserEmail, this.event.id);
+    this.eventService.addComment(this.commentaire, this.currentUserEmail, this.event.id, this.groupId);
     this.commentaire = '';
     setTimeout( () => { this.cdkScrollable.first.scrollTo({bottom: 0}) }, 200);
   }

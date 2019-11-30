@@ -13,26 +13,38 @@ import { Commentaire } from '../models/commentaire';
 })
 export class EventsService {
   
-  events: AngularFirestoreCollection<Evenement>
-
   constructor(private angularFireStore: AngularFirestore) {
-    this.events = angularFireStore.collection<Evenement>('events')
+  }  
+
+  getAllEvenements(groupId: string) : Observable<Evenement[]> {
+      return this.computeCollection(groupId).snapshotChanges().pipe(
+        map(actions => actions.map(a => {
+          const data = a.payload.doc.data() as Evenement;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        })
+        )
+      );
   }
 
-  getAllEvenements() : Observable<Evenement[]> {
-    return this.events.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as Evenement;
-        const id = a.payload.doc.id;
-        return { id, ...data };
-      })
-      )
-    );
-    
+  computeCollection(groupId: string) : AngularFirestoreCollection<Evenement> {
+    if (groupId) {
+      return this.angularFireStore.collection<Evenement>('groups/'+groupId+'/events')
+    } else {
+      return this.angularFireStore.collection<Evenement>('events')
+    }
   }
 
-  getEventById(id: string) : Observable<Evenement> {
-    return this.events.doc(id).get().pipe(
+  computeCommentsCollection(groupId: string, evenementId: string) : AngularFirestoreCollection<Commentaire> {
+    if (groupId) {
+      return this.angularFireStore.collection<Commentaire>('groups/'+groupId+'/events/'+ evenementId +'/comments')
+    } else {
+      return this.angularFireStore.collection<Commentaire>('events/'+ evenementId +'/comments')
+    }
+  }
+
+  getEventById(id: string, groupId: string) : Observable<Evenement> {
+    return this.computeCollection(groupId).doc(id).get().pipe(
         map(x => {
           const data = x.data();
           return {id, ...data} as Evenement;
@@ -40,8 +52,8 @@ export class EventsService {
       )
   }
 
-  getCommentsByEventId(evenementId : string) : Observable<Commentaire[]> {
-    return this.angularFireStore.collection<Commentaire>('events/'+ evenementId +'/comments')
+  getCommentsByEventId(evenementId : string, groupId: string) : Observable<Commentaire[]> {
+    return this.computeCommentsCollection(groupId, evenementId)
     .snapshotChanges().pipe(
       map(actions => actions.map(a => {
         const data = a.payload.doc.data();
@@ -53,19 +65,19 @@ export class EventsService {
     
   }
 
-  addOne(evenement: Evenement) {
+  addOne(evenement: Evenement, groupId: string) {
     
     evenement.status = 'newEvent';
-    this.events.add(evenement);
+    this.computeCollection(groupId).add(evenement);
   }
 
-  update(evenement: Evenement) {
-    this.events.doc(evenement.id)
+  update(evenement: Evenement, groupId: string) {
+    this.computeCollection(groupId).doc(evenement.id)
     .set(evenement, {})
   }
 
-  addComment(comment:string, author: string, evenementId: string) {
-    this.angularFireStore.collection('events/'+ evenementId +'/comments')
+  addComment(comment:string, author: string, evenementId: string, groupId: string) {
+    this.computeCommentsCollection(groupId, evenementId)
     .add({comment, author, date:new Date()});
   }
 

@@ -6,29 +6,68 @@ import { GroupsService } from 'src/app/services/groups.service';
 import { Groupe } from 'src/app/models/groupe';
 import { from, Subscription, Observable } from 'rxjs';
 import { concat } from 'bytebuffer';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-list-group',
   templateUrl: './list-group.component.html',
-  styleUrls: ['./list-group.component.scss']
+  styles: ['']
 })
-export class ListGroupComponent {
-  
+export class ListGroupComponent implements OnDestroy {
+ 
 
   constructor(private authenticationService: AuthenticationService,
     private userService: UsersService,
     private groupService: GroupsService) { }
 
+  
+  subscriptions: Subscription[] = [];
+
   groups$ = this.authenticationService.userData.pipe(
     switchMap(userData => this.userService.getUser(userData.email)),
     map(x => x.data().groups as Groupe[]),
-    mergeMap(x => from(x).pipe(
+    switchMap(x => from(x).pipe(
        mergeMap((y: Groupe)=> this.groupService.getGroup(y.id)),
        toArray()
       )
     )
   );
-
   
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(x => x.unsubscribe());
+  }
+
+  onAddMember($event) {
+    
+    this.subscriptions.push(this.groupService.getGroup($event.id).pipe(
+      map(x => {
+        x.members.push($event.member);
+        return x;
+      }),
+      mergeMap(x => {
+        this.groupService.update(x);
+        return this.userService.addUserGroup($event.member, {id: x.id, name: x.name })
+      })
+    ).subscribe());
+
+  }
  
+  onRemoveMember($event) {
+    this.subscriptions.push(this.groupService.getGroup($event.id).pipe(
+      map(x => {
+        x.members = x.members.filter(x => x !== $event.member);
+        return x;
+      }),
+      mergeMap(x => {
+        this.groupService.update(x);
+        return this.userService.getUser($event.member)
+      }),
+      map(x => {
+        const user = x.data() as User;
+        user.groups = user.groups.filter(x => x.id !== $event.id)
+        this.userService.update(user);
+      }),
+
+    ).subscribe());
+  }
 }
