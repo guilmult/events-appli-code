@@ -4,11 +4,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { EventsService } from '../../services/events.service';
-import { Subscription, combineLatest, fromEvent } from 'rxjs';
+import { Subscription, combineLatest, from } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate, sequence, state } from '@angular/animations';
-import { map, debounceTime, switchMap, filter, tap } from 'rxjs/operators';
+import { map, debounceTime, switchMap, filter, tap, mergeMap, toArray, scan, take, takeUntil } from 'rxjs/operators';
 import { GroupsService } from 'src/app/services/groups.service';
 
 
@@ -44,6 +44,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   currentUserEmail: string;
 
+  filterInscritActivated: boolean = false;
+
   groupId: string;
   groupName: string = "";
 
@@ -77,10 +79,23 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+ 
+
+
   populateDatatable(filterInscrit: boolean) {
+    this.filterInscritActivated = filterInscrit;
     this.subscriptions.push(
       combineLatest(
-        this.activatedRoute.paramMap.pipe(switchMap(param => this.eventsService.getAllEvenements(param.get('groupId')))),
+        this.activatedRoute.paramMap.pipe(
+          switchMap(param => this.eventsService.getAllEvenements(param.get('groupId')), 
+          (param, events)=> {events.forEach(x => x.groupId=param.get('groupId')); return events;}),
+          switchMap(events => from(events).pipe(
+            mergeMap(event => this.eventsService.getAllInscrits(event.id, event.groupId),
+            (event, inscrits) => ({...event, inscrits})),
+            take(events.length),
+            toArray()
+          ))
+        ),
         this.authService.userData,
         (events, userData) => ({events, userData})
        )
@@ -90,13 +105,14 @@ export class EventsListComponent implements OnInit, OnDestroy {
           y.isInscrit = y.inscrits.lastIndexOf(x.userData.email) > -1; 
           y.date = (y.date as firebase.firestore.Timestamp).toDate();
         });
+        
         this.dataSource= new MatTableDataSource(filterInscrit ? x.events.filter(z => z.inscrits.lastIndexOf(x.userData.email) > -1) : x.events);
         this.dataSource.sort = this.sort;
         this.currentUserEmail = x.userData.email;
       }),
       debounceTime(100),
       map(() => {
-        let newEvents = this.dataSource.data.filter(x => x.status === 'newEvent');
+        let newEvents = this.dataSource.data.filter(x => x.status === 'newEvent' && x.creator === this.currentUserEmail);
         newEvents.forEach(x => {x.status = 'oldEvent'});
         return newEvents;
       }),
@@ -133,13 +149,15 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   inscription(evenement: Evenement) {
+    evenement.isInscrit = true;
     evenement.inscrits.push(this.currentUserEmail);
-    this.eventsService.update(evenement, this.groupId);
+    this.eventsService.addInscrit(evenement.id, this.currentUserEmail, this.groupId);
   }
 
   desinscription(evenement: Evenement) {
+    evenement.isInscrit = false;
     evenement.inscrits = evenement.inscrits.filter(x => x !== this.currentUserEmail);
-    this.eventsService.update(evenement, this.groupId);
+    this.eventsService.removeInscrit(evenement.id, this.currentUserEmail, this.groupId);
   }
 
   navigateDetail(evenement: Evenement) {

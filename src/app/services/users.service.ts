@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { User } from '../models/user';
 import { switchMap, map } from 'rxjs/operators';
 import { Groupe } from '../models/groupe';
+import { Observable } from 'rxjs';
 
 
 
@@ -17,6 +18,7 @@ export class UsersService {
 
   constructor(private angularFireStore: AngularFirestore) {
     this.users = angularFireStore.collection<User>('users');
+
   }
 
 
@@ -32,20 +34,30 @@ export class UsersService {
   }
 
   addUserGroup(email: string, group: Groupe ) {
-    return this.users.doc(email).get().pipe(
-      switchMap(x => {
-        const user = x.data();
-        user.groups.push(group);
-        return this.users.doc(email).set(user,{});
-      })
-    );
-    
+    console.log(group);
+    return this.users.doc(email).collection('groups').doc(group.id).set(group, {});
+  }
+
+  removeUserGroup(email: string, group: Groupe) {
+    return this.users.doc(email).collection('groups').doc(group.id).delete();
   }
 
   getUser(email: string) {
     return this.users.doc(email).get();
   }
  
+  getUserGroups(email: string): Observable<Groupe[]> {
+    return this.users.doc(email).collection('groups')
+    .snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data();
+        const id = a.payload.doc.id;
+        return { id, ...data };
+      })
+      )
+    );
+  }
+
   update(user: User) {
     this.users.doc(user.email)
     .set(user, {})

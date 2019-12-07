@@ -71,7 +71,9 @@ export class AddEventComponent implements OnInit, OnDestroy {
       inscrits:[this.currentUserEmail],
       ...formValue
     }
-    this.eventsService.addOne(event, this.groupId);
+    this.eventsService.addOne(event, this.groupId)
+    .then(x => this.eventsService.addInscrit(x.id, this.currentUserEmail, this.groupId));
+    
     this.navigateToListEvents();
    
   }

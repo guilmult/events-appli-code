@@ -44,7 +44,10 @@ export class DetailEventComponent implements OnInit, OnDestroy {
     
     
     this.data$ = this.activatedRoute.paramMap.pipe(
-      switchMap(param => this.eventService.getEventById(param.get('id'), param.get('groupId')))
+      switchMap(param => this.eventService.getEventById(param.get('id'), param.get('groupId')), 
+      (param, event) => {event.groupId = param.get('groupId'); return event}),
+      switchMap(event => this.eventService.getAllInscrits(event.id, event.groupId),
+      (event, inscrits) => ({...event, inscrits}))
     )
 
     this.comments$ = this.activatedRoute.paramMap.pipe(
@@ -87,15 +90,11 @@ export class DetailEventComponent implements OnInit, OnDestroy {
   }
 
   inscription() {
-    this.event.inscrits.push(this.currentUserEmail);
-    this.eventService.update(this.event, this.groupId);
-    this.event.isInscrit = true;
+    this.eventService.addInscrit(this.event.id, this.currentUserEmail, this.groupId);
   }
 
   desinscription() {
-    this.event.inscrits = this.event.inscrits.filter(x => x !== this.currentUserEmail);
-    this.eventService.update(this.event, this.groupId);
-    this.event.isInscrit = false;
+    this.eventService.removeInscrit(this.event.id, this.currentUserEmail, this.groupId)
   }
 
   addComment() {

@@ -9,4 +9,5 @@ export interface Evenement {
     status?: string;
     creationDate?: Date;
     creator?: string;
+    groupId?: string;
 }

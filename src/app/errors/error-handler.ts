@@ -14,7 +14,7 @@ export class AppErrorHandler implements ErrorHandler {
         console.error(e)
         if (e instanceof Error) {
             let error = e as Error
-            if (error.name === 'FirebaseError') {
+            if (error.name === 'FirebaseError' || error.name === 'Error') {
                 this.ngzone.run(() => {
                     this.dialog.open(ErrorDialogComponent, {data: {message: error.message}});
                 }) 

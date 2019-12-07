@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { GroupsService } from 'src/app/services/groups.service';
 import { Groupe } from 'src/app/models/groupe';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { switchMap, map, mergeMap } from 'rxjs/operators';
+import { switchMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Subscription, from } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -39,6 +39,8 @@ export class AddGroupComponent implements OnInit, OnDestroy {
         this.router.navigated = false;
       }
     }));
+
+
   }
   ngOnDestroy(): void {
       this.subscriptions.forEach(x => x.unsubscribe());
@@ -66,15 +68,12 @@ export class AddGroupComponent implements OnInit, OnDestroy {
           members : this.emails
         };
         return this.groupService.addOne(group);
-      }),
+      },
+      (a,b) => ({id: b.id, creator:a.email})),
       switchMap(x => from(this.emails).pipe(
-        mergeMap(y => this.userService.addUserGroup(y, {id: x.id, name:this.nameFormGroup.value.nameCtrl}))
+        mergeMap(y => this.userService.addUserGroup(y, {id: x.id, creator: x.creator, name:this.nameFormGroup.value.nameCtrl}))
       )),
-      map(() => {
-          this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['/app/groups']);
-        }); 
-      })
+      map(() => this.router.navigate(['/app/groups']))
     ).subscribe()
     );
     

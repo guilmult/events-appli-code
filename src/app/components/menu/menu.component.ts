@@ -25,11 +25,7 @@ export class MenuComponent {
   }
 
   userGroups$ = this.authenticationService.userData.pipe(
-    switchMap(userData => this.userService.getUser(userData.email)),
-    map(x => {
-      const data = x.data();
-      return data.groups;
-    })
-  )
+    switchMap(userData => this.userService.getUserGroups(userData.email))
+  );
 
 }

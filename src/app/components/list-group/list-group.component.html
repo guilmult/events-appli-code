@@ -18,7 +18,8 @@
         </mat-expansion-panel-header>
         <app-manage-group-members 
             [emails]="group?.members" 
-            [groupId]="group?.id" 
+            [groupId]="group?.id"
+            [groupCreator]="group?.creator" 
             [editable]="(authenticationService.userData | async)?.email === group?.creator" 
             (addMember)="onAddMember($event)" 
             (removeMember)="onRemoveMember($event)">

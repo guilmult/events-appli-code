@@ -24,8 +24,7 @@ export class ListGroupComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
 
   groups$ = this.authenticationService.userData.pipe(
-    switchMap(userData => this.userService.getUser(userData.email)),
-    map(x => x.data().groups as Groupe[]),
+    switchMap(userData => this.userService.getUserGroups(userData.email)),
     switchMap(x => from(x).pipe(
        mergeMap((y: Groupe)=> this.groupService.getGroup(y.id)),
        toArray()
@@ -46,7 +45,7 @@ export class ListGroupComponent implements OnDestroy {
       }),
       mergeMap(x => {
         this.groupService.update(x);
-        return this.userService.addUserGroup($event.member, {id: x.id, name: x.name })
+        return this.userService.addUserGroup($event.member, {id: x.id, creator: x.creator, name: x.name })
       })
     ).subscribe());
 
@@ -60,13 +59,8 @@ export class ListGroupComponent implements OnDestroy {
       }),
       mergeMap(x => {
         this.groupService.update(x);
-        return this.userService.getUser($event.member)
-      }),
-      map(x => {
-        const user = x.data() as User;
-        user.groups = user.groups.filter(x => x.id !== $event.id)
-        this.userService.update(user);
-      }),
+        return this.userService.removeUserGroup($event.member, x);
+      })
 
     ).subscribe());
   }

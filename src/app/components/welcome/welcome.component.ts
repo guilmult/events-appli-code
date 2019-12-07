@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { EventsService } from 'src/app/services/events.service';
+import { mergeMap, toArray } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { Evenement } from 'src/app/models/evenement';
 
 @Component({
   selector: 'app-welcome',
@@ -12,4 +16,5 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
   }
 
+  
 }

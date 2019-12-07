@@ -24,6 +24,10 @@ export class ManageGroupMembersComponent implements OnInit, OnDestroy {
   emails: string[] = [];
   @Input()
   groupId: string;
+
+  @Input()
+  groupCreator: string;
+
   @Input()
   editable: boolean = false;
 

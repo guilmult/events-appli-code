@@ -14,7 +14,7 @@
         <td><mat-icon>person</mat-icon></td>
         <td>{{item |  namefrommail}}</td>
         <td> 
-            <button *ngIf="editable" mat-icon-button color="primary"  matTooltip="Ajouter" [disabled]="f.emailCtrl.errors" (click)="removeMemberFromTable(item)">
+            <button *ngIf="editable && item !== groupCreator" mat-icon-button color="primary"  matTooltip="Ajouter" [disabled]="f.emailCtrl.errors" (click)="removeMemberFromTable(item)">
                 <mat-icon>delete</mat-icon>
             </button>
         </td>
