@@ -3,6 +3,7 @@ import { EventsService } from 'src/app/services/events.service';
 import { mergeMap, toArray } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Evenement } from 'src/app/models/evenement';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-welcome',
@@ -11,7 +12,7 @@ import { Evenement } from 'src/app/models/evenement';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authenticationService: AuthenticationService) { }
 
   ngOnInit() {
   }

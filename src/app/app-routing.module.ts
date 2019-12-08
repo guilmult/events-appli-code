@@ -9,6 +9,7 @@ import { AddGroupComponent } from './components/add-group/add-group.component';
 import { ListGroupComponent } from './components/list-group/list-group.component';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 
 const routes: Routes = [
@@ -52,7 +53,10 @@ const routes: Routes = [
       { path: 'groups/:groupId/addEvent',
         component : AddEventComponent,
         canActivate: [AuthGuard]
-      }
+      },
+      { path: 'signUp',
+        component : SignUpComponent
+      },
     ]
   }
   ,

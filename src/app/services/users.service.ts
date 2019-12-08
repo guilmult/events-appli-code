@@ -3,7 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { User } from '../models/user';
 import { switchMap, map } from 'rxjs/operators';
 import { Groupe } from '../models/groupe';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 
 
 
@@ -47,6 +47,7 @@ export class UsersService {
   }
  
   getUserGroups(email: string): Observable<Groupe[]> {
+   if (email !== null) {
     return this.users.doc(email).collection('groups')
     .snapshotChanges().pipe(
       map(actions => actions.map(a => {
@@ -56,6 +57,10 @@ export class UsersService {
       })
       )
     );
+   } else {
+     return from([]);
+   }
+     
   }
 
   update(user: User) {

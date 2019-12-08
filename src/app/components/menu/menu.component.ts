@@ -4,7 +4,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UsersService } from 'src/app/services/users.service';
 import { ConnexionDialogComponent } from '../connexion-dialog/connexion-dialog.component';
 import { DeconnexionDialogComponent } from '../deconnexion-dialog/deconnexion-dialog.component';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-menu',
@@ -25,7 +25,7 @@ export class MenuComponent {
   }
 
   userGroups$ = this.authenticationService.userData.pipe(
-    switchMap(userData => this.userService.getUserGroups(userData.email))
+    switchMap(userData => this.userService.getUserGroups(userData !== null ? userData.email : null))
   );
 
 }

@@ -14,7 +14,6 @@ export class AuthenticationService {
 
    /* Sign in */
    SignIn(email: string, password: string): Promise<firebase.auth.UserCredential> {
-
     return this.angularFireAuth
       .auth
       .signInWithEmailAndPassword(email, password)
@@ -23,5 +22,9 @@ export class AuthenticationService {
 
   SignOut() {
     return this.angularFireAuth.auth.signOut();
+  }
+
+  SignUp(email: string, password: string) {
+    return this.angularFireAuth.auth.createUserWithEmailAndPassword(email, password);
   }
 }

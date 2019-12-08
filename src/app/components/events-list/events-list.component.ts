@@ -99,7 +99,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
         this.authService.userData,
         (events, userData) => ({events, userData})
        )
-      .pipe(map(x => {
+      .pipe(
+        filter(x => x.userData !== null),
+        map(x => {
         x.events = x.events.filter(x => (x.date as firebase.firestore.Timestamp).toDate().getTime() >= this.getTodayAtMidnight())
         x.events.forEach(y => {
           y.isInscrit = y.inscrits.lastIndexOf(x.userData.email) > -1; 

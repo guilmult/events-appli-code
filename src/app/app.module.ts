@@ -51,6 +51,7 @@ import { GroupsService } from './services/groups.service';
 import { ListGroupComponent } from './components/list-group/list-group.component';
 import { ManageGroupMembersComponent } from './components/manage-group-members/manage-group-members.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 registerLocaleData(localeFr);
 
@@ -68,7 +69,8 @@ registerLocaleData(localeFr);
     AddGroupComponent,
     ListGroupComponent,
     ManageGroupMembersComponent,
-    MenuComponent
+    MenuComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,
