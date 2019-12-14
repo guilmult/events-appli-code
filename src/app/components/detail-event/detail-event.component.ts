@@ -36,6 +36,10 @@ export class DetailEventComponent implements OnInit, OnDestroy {
 
   groupId: string;
 
+  editionMode: boolean = false;
+
+  canEdit: boolean = false;
+
   @ViewChildren(CdkScrollable) cdkScrollable;
 
   ngOnInit() {
@@ -45,7 +49,7 @@ export class DetailEventComponent implements OnInit, OnDestroy {
     
     this.data$ = this.activatedRoute.paramMap.pipe(
       switchMap(param => this.eventService.getEventById(param.get('id'), param.get('groupId')), 
-      (param, event) => {event.groupId = param.get('groupId'); return event}),
+      (param, event) => {event.groupId = param.get('groupId'); event.date = event.date.toDate(); return event}),
       switchMap(event => this.eventService.getAllInscrits(event.id, event.groupId),
       (event, inscrits) => ({...event, inscrits}))
     )
@@ -65,6 +69,7 @@ export class DetailEventComponent implements OnInit, OnDestroy {
           this.event = x.event;
           this.event.isInscrit = x.event.inscrits.lastIndexOf(x.userData.email) > -1;
           this.currentUserEmail = x.userData.email;
+          this.canEdit = x.event.creator === x.userData.email;
       } 
     ));
 
@@ -106,5 +111,20 @@ export class DetailEventComponent implements OnInit, OnDestroy {
   openComments() {
     this.subscription.push(this.comments$.subscribe({next: () => setTimeout( () => { this.cdkScrollable.first.scrollTo({bottom: 0}) }, 200) }));
     this.cdkScrollable.first.scrollTo({bottom: 0})
+  }
+
+  switchEditMode() {
+    this.editionMode = true;
+  }
+
+  updateEvent($event) {
+    
+    this.event = {...this.event, ...$event};
+    this.eventService.update(this.event, this.groupId);
+    this.editionMode = false;
+  }
+
+  cancelUpdate() {
+    this.editionMode = false;
   }
 }

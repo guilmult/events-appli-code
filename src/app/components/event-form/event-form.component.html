@@ -1,0 +1,39 @@
+<form [formGroup]="checkoutForm" (ngSubmit)="submit(checkoutForm.value)" class="form-container">
+    <mat-form-field>
+        <input matInput [matDatepicker]="picker" [min]="startDate" placeholder="Choisir une date" 
+          formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="f.date.errors">
+            La date est obligatoire
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Titre" formControlName="titre">
+        <mat-error *ngIf="f.titre.errors">
+            Le titre est obligatoire
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <textarea matInput placeholder="Descriptif"
+        matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10 formControlName="description"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+            <input matInput placeholder="Site web" 
+             formControlName="lienSiteWeb">
+            <mat-error *ngIf="f.lienSiteWeb.errors">
+                L'URL n'a pas le bon format
+            </mat-error>
+        </mat-form-field>
+    <div style="margin: auto;">
+        
+        <button mat-icon-button color="primary" type="submit"  matTooltip="Sauvegarder">
+            <mat-icon>save</mat-icon>
+        </button>
+
+        <button mat-icon-button   matTooltip="Annuler" (click)="cancel()">
+                <mat-icon>cancel</mat-icon>
+        </button>
+    </div>
+
+</form>

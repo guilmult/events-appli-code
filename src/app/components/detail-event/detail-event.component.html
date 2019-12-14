@@ -14,15 +14,17 @@
    <mat-icon>logout</mat-icon>
 </button>
 
-     <mat-accordion>
-        
-        <mat-expansion-panel [expanded]="true">
+<button *ngIf="canEdit" color="primary" mat-icon-button   matTooltip="Modifier" (click)="switchEditMode()">
+    <mat-icon>edit</mat-icon>
+ </button>
+     <mat-accordion *ngIf="!editionMode" > 
+        <mat-expansion-panel  [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                   <b>{{event?.titre}}</b>
                 </mat-panel-title>
                 <mat-panel-description>
-                    Le {{event?.date.toDate() | date}} <br/>
+                    Le {{event?.date | date}} <br/>
                     Par {{event?.creator | namefrommail}}
                 </mat-panel-description>
             </mat-expansion-panel-header>
@@ -30,7 +32,7 @@
             
             <p style="white-space: pre-line;">{{event?.description}}</p>
         </mat-expansion-panel>
-
+       
         <mat-expansion-panel >
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -82,5 +84,12 @@
         </mat-expansion-panel>
     </mat-accordion>
 
-
-   
+        
+<mat-card *ngIf="editionMode">
+        <mat-card-title>Modifier l'activité</mat-card-title>
+        <mat-card-content>           
+            <app-event-form [event]="event" (submitForm)="updateEvent($event)" (cancelForm)="cancelUpdate()"></app-event-form>   
+        </mat-card-content>
+    </mat-card>
+       
+    

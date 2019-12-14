@@ -40,7 +40,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import localeFr from '@angular/common/locales/fr';
 
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, DatePipe } from '@angular/common';
 import { AppErrorHandler } from './errors/error-handler';
 import { ErrorDialogComponent } from './errors/error-dialog.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -52,6 +52,7 @@ import { ListGroupComponent } from './components/list-group/list-group.component
 import { ManageGroupMembersComponent } from './components/manage-group-members/manage-group-members.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { EventFormComponent } from './components/event-form/event-form.component';
 
 registerLocaleData(localeFr);
 
@@ -70,7 +71,9 @@ registerLocaleData(localeFr);
     ListGroupComponent,
     ManageGroupMembersComponent,
     MenuComponent,
-    SignUpComponent
+    SignUpComponent,
+    EventFormComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -114,7 +117,8 @@ registerLocaleData(localeFr);
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr' },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},
-    {provide: ErrorHandler, useClass: AppErrorHandler}
+    {provide: ErrorHandler, useClass: AppErrorHandler},
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

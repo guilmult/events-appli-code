@@ -13,15 +13,13 @@ import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms'
 @Component({
   selector: 'app-add-event',
   templateUrl: './add-event.component.html',
-  styles: ['.form-container {display: flex; flex-direction: column;}']
+  styles: []
 })
 export class AddEventComponent implements OnInit, OnDestroy {
   
 
   subscriptions: Subscription[] = [];
   
-  checkoutForm: FormGroup;
-
   currentUserEmail: string;
 
   groupId: string;
@@ -29,19 +27,11 @@ export class AddEventComponent implements OnInit, OnDestroy {
   constructor(private eventsService: EventsService, 
     private authService: AuthenticationService, 
     private router: Router, 
-    private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute) {
-      this.checkoutForm = this.formBuilder
-      .group({
-        titre:[null, Validators.required], 
-        description:'', 
-        date:['', Validators.required], 
-        lienSiteWeb:['', Validators.pattern('(https?://){1}([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]
-     })
     }
   
     
-    get f() { return this.checkoutForm.controls; }
+  
  
   ngOnInit() {
     this.subscriptions.push(this.authService.userData.subscribe(x => this.currentUserEmail = x.email));
@@ -56,31 +46,20 @@ export class AddEventComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(x => x.unsubscribe());
   }
 
-  
-  add(formValue) {
-    
-    if (this.checkoutForm.invalid) {
-      return;
-    }
-
-    formValue.date = formValue.date.toDate();
-
-    let event: Evenement = {
+  add($event) {
+ 
+    let event = {
       creator: this.currentUserEmail,
       creationDate: new Date(),
-      inscrits:[this.currentUserEmail],
-      ...formValue
+      ...$event
     }
-    this.eventsService.addOne(event, this.groupId)
-    .then(x => this.eventsService.addInscrit(x.id, this.currentUserEmail, this.groupId));
-    
-    this.navigateToListEvents();
    
+    this.eventsService.addOne(event, this.groupId)
+    .then(x => this.eventsService.addInscrit(x.id, this.currentUserEmail, this.groupId)
+    .then(() => this.navigateToListEvents()));
   }
-
-  cancel() {
-    this.navigateToListEvents();
-  }
+  
+    
 
   navigateToListEvents() {
     if(this.groupId) {
