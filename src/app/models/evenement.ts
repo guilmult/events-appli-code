@@ -1,3 +1,5 @@
+import { Commentaire } from './commentaire';
+
 export interface Evenement {
     id?: string;
     titre?: string;
@@ -7,7 +9,10 @@ export interface Evenement {
     isInscrit?: boolean;
     lienSiteWeb?: string;
     status?: string;
-    creationDate?: Date;
+    creationDate?: any;
+    updateDate?: any;
     creator?: string;
     groupId?: string;
+    messages?: Commentaire[];
+    isRecentlyUpdated?: boolean;
 }

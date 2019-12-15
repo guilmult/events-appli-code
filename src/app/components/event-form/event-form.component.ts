@@ -43,8 +43,10 @@ export class EventFormComponent implements OnInit {
       return;
     }
 
-    formValue.date = formValue.date.toDate();
-   
+    if (!(formValue.date instanceof Date)) {
+      formValue.date = formValue.date.toDate();
+    }
+
     this.submitForm.emit(
       {
         titre:formValue.titre,

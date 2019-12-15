@@ -92,6 +92,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
           switchMap(events => from(events).pipe(
             mergeMap(event => this.eventsService.getAllInscrits(event.id, event.groupId),
             (event, inscrits) => ({...event, inscrits})),
+            mergeMap(event => this.eventsService.getCommentsByEventId(event.id, event.groupId),
+            (event, messages) => ({...event, messages})),
             take(events.length),
             toArray()
           ))
@@ -106,6 +108,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
         x.events.forEach(y => {
           y.isInscrit = y.inscrits.lastIndexOf(x.userData.email) > -1; 
           y.date = (y.date as firebase.firestore.Timestamp).toDate();
+          y.isRecentlyUpdated = this.isRecentlyUpdated(y);
         });
         
         this.dataSource= new MatTableDataSource(filterInscrit ? x.events.filter(z => z.inscrits.lastIndexOf(x.userData.email) > -1) : x.events);
@@ -124,6 +127,32 @@ export class EventsListComponent implements OnInit, OnDestroy {
       .subscribe()
     )  
 
+  }
+
+  isRecentlyUpdated(event: Evenement) : boolean {
+    const fiveDays = 1000 * 60 * 60 * 24 * 5;
+    const now = new Date().getTime();
+    if (now - event.creationDate.toDate().getTime() < fiveDays) {
+      return true;
+    }
+
+    if (event.updateDate) {
+      if (now - event.updateDate.toDate().getTime() < fiveDays) {
+        return true;
+      }
+    }
+
+    if (event.messages && event.messages.length > 0) {
+      let result = false;
+      event.messages.forEach(x => {
+        if (now - x.date.toDate().getTime() < fiveDays) {
+          result = true;
+        }
+      } )
+      return result;
+    }
+    
+    return false;
   }
 
   getTodayAtMidnight() : number {

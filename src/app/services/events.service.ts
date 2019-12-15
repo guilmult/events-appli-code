@@ -82,6 +82,8 @@ export class EventsService {
   }
 
   update(evenement: Evenement, groupId: string) {
+    
+    evenement.updateDate = new Date();
     this.computeCollection(groupId).doc(evenement.id)
     .set(evenement, {})
   }
